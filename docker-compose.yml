@@ -1,0 +1,61 @@
+name: store-web
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: store_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: store_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./store-backend
+      dockerfile: Dockerfile
+    container_name: store_backend
+    restart: always
+    ports:
+      - "8080:8080"
+    env_file:
+      - ./store-backend/.env
+    environment:
+      DATABASE_URL: postgresql://postgres:admin123@db:5432/store_db?schema=public
+      PORT: "8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./store-backend:/app
+      - /app/node_modules
+    command: sh -c "npx prisma migrate deploy && npm run dev"
+
+  frontend:
+    build:
+      context: ./store-frontend
+      dockerfile: Dockerfile
+    container_name: store_frontend
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:8080
+    depends_on:
+      - backend
+    volumes:
+      - ./store-frontend:/app
+      - /app/node_modules
+      - /app/.next
+
+volumes:
+  pgdata:
