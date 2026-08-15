@@ -24,6 +24,6 @@ server.use((err: any, req: Request, res: Response, next: NextFunction) => {
 
 server.listen(process.env.PORT || 8080, () => {
   console.log(
-    `Server running on http://192.168.1.22:${process.env.PORT || 8080}`,
+    `Server running on http://192.168.1.12:${process.env.PORT || 8080}`,
   );
 });
