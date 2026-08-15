@@ -4,7 +4,12 @@ type ProductFilters = {
   metadata?: { [key: string]: string } | undefined;
   order?: string | undefined;
   limit?: number | undefined;
+  category?: string | undefined;
+  search?: string | undefined;
+  page?: number | undefined;
 };
+
+const PAGE_SIZE = 9;
 
 export const getAllProducts = async (filters: ProductFilters) => {
   // Organize ORDER
@@ -36,7 +41,7 @@ export const getAllProducts = async (filters: ProductFilters) => {
       if (valueIds.length === 0) continue;
 
       metaFilters.push({
-        metadata: {
+        productMetadata: {
           some: {
             categoryMetadataId,
             metadataValueId: { in: valueIds },
@@ -45,6 +50,14 @@ export const getAllProducts = async (filters: ProductFilters) => {
       });
     }
     if (metaFilters.length > 0) where.AND = metaFilters;
+  }
+
+  if (filters.category) {
+    where.category = { slug: filters.category };
+  }
+
+  if (filters.search) {
+    where.label = { contains: filters.search, mode: "insensitive" };
   }
 
   const products = await prisma.product.findMany({
@@ -59,18 +72,27 @@ export const getAllProducts = async (filters: ProductFilters) => {
     },
     where,
     orderBy,
-    ...(filters.limit ? { take: filters.limit } : {}),
+    ...(filters.page
+      ? { skip: (filters.page - 1) * PAGE_SIZE, take: PAGE_SIZE }
+      : filters.limit
+        ? { take: filters.limit }
+        : {}),
   });
 
-  return products.map((product) => ({
-    id: product.id,
-    label: product.label,
-    price: product.price,
-    image: product.productImages[0]
-      ? `media/products/${product.productImages[0].url}`
-      : null,
-    productImages: undefined,
-  }));
+  const total = await prisma.product.count({ where });
+
+  return {
+    products: products.map((product) => ({
+      id: product.id,
+      label: product.label,
+      price: product.price,
+      image: product.productImages[0]
+        ? `media/products/${product.productImages[0].url}`
+        : null,
+      productImages: undefined,
+    })),
+    total,
+  };
 };
 
 export const getProduct = async (id: number) => {
@@ -83,17 +105,30 @@ export const getProduct = async (id: number) => {
       description: true,
       categoryId: true,
       productImages: true,
+      productMetadata: true,
     },
   });
 
   if (!product) return null;
 
+  const values = await prisma.metadataValue.findMany({
+    where: { id: { in: product.productMetadata.map((m) => m.metadataValueId) } },
+    select: { id: true, label: true },
+  });
+  const labelById = new Map(values.map((value) => [value.id, value.label]));
+
   return {
     ...product,
+    productMetadata: undefined,
     images:
       product.productImages.length > 0
         ? product.productImages.map((img) => `media/products/${img.url}`)
         : [],
+    metadata: product.productMetadata.map((meta) => ({
+      group: meta.categoryMetadataId,
+      valueId: meta.metadataValueId,
+      label: labelById.get(meta.metadataValueId) ?? "",
+    })),
   };
 };
 

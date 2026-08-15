@@ -17,15 +17,19 @@ export const getProducts: RequestHandler = async (req, res) => {
   if (!parseResult.success)
     return res.status(400).json({ error: "Parameter validation failed" });
 
-  const { metadata, orderBy, limit } = parseResult.data;
+  const { metadata, orderBy, limit, category, search, page } = parseResult.data;
 
   const parsedLimit = limit ? parseInt(limit) : undefined;
   const parsedMetadata = metadata ? JSON.parse(metadata) : undefined;
+  const parsedPage = page ? parseInt(page) : undefined;
 
-  const products = await getAllProducts({
+  const { products, total } = await getAllProducts({
     metadata: parsedMetadata,
     order: orderBy,
     limit: parsedLimit,
+    category,
+    search,
+    page: parsedPage,
   });
 
   const productsWithAbsoluteUrl = products.map((product) => ({
@@ -34,7 +38,7 @@ export const getProducts: RequestHandler = async (req, res) => {
     liked: false, // TODO: Implement liked functionality, fetch this.
   }));
 
-  res.json({ error: null, products: productsWithAbsoluteUrl });
+  res.json({ error: null, products: productsWithAbsoluteUrl, total });
 };
 
 export const getOneProduct: RequestHandler = async (req, res) => {

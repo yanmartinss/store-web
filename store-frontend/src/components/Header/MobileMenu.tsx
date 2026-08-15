@@ -6,6 +6,7 @@ import ListItem from '@mui/material/ListItem'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
+import { Link } from 'react-router-dom'
 import { NAV_ITEMS } from './navItems'
 
 interface MobileMenuProps {
@@ -21,7 +22,7 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
           {NAV_ITEMS.map((item, index) => (
             <Box key={item.href}>
               <ListItem disablePadding>
-                <ListItemButton component="a" href={item.href} onClick={onClose} sx={{ px: 0, py: 1 }}>
+                <ListItemButton component={Link} to={item.href} onClick={onClose} sx={{ px: 0, py: 1 }}>
                   <ListItemText primary={item.label} />
                   <ChevronRightIcon sx={{ color: 'brand.main' }} />
                 </ListItemButton>

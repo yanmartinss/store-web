@@ -1,8 +1,9 @@
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
+import { Link } from "react-router-dom";
 import { NAV_ITEMS } from "./navItems";
 
-const NavLink = styled("a")(({ theme }) => ({
+const NavLink = styled(Link)(({ theme }) => ({
   textDecoration: "none",
   color: theme.palette.text.secondary,
   fontSize: "0.85rem",
@@ -23,7 +24,7 @@ export default function NavLinks() {
       sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
     >
       {NAV_ITEMS.map((item) => (
-        <NavLink key={item.href} href={item.href}>
+        <NavLink key={item.href} to={item.href}>
           {item.label}
         </NavLink>
       ))}

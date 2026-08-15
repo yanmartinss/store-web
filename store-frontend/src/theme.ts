@@ -12,7 +12,7 @@ declare module '@mui/material/styles' {
 const theme = createTheme({
   palette: {
     mode: 'light',
-    primary: { main: '#08060d' },
+    primary: { main: '#1e6fd9', contrastText: '#fff' },
     brand: { main: '#1e6fd9' },
     background: { default: '#f5f5f5', paper: '#ffffff' },
     text: { primary: '#08060d', secondary: '#6b6375' },

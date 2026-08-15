@@ -6,6 +6,7 @@ import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
+import { Link } from "react-router-dom";
 import NavLinks from "./NavLinks";
 import SearchBar from "./SearchBar";
 
@@ -28,12 +29,14 @@ export default function HeaderMain({ onMenuToggle, menuOpen }: HeaderMainProps) 
         {isDesktop ? (
           <>
             <Box sx={{ display: "flex", alignItems: "center", height: 40, mr: 4, lineHeight: 0 }}>
-              <Box
-                component="img"
-                src={logo}
-                alt="Logo da loja"
-                sx={{ height: 40, display: "block" }}
-              />
+              <Link to="/" style={{ lineHeight: 0, display: "block" }}>
+                <Box
+                  component="img"
+                  src={logo}
+                  alt="Logo da loja"
+                  sx={{ height: 40, display: "block" }}
+                />
+              </Link>
             </Box>
             <Box sx={{ ml: 2 }}>
               <NavLinks />
@@ -60,12 +63,14 @@ export default function HeaderMain({ onMenuToggle, menuOpen }: HeaderMainProps) 
           <>
             <Box sx={{ flex: 1, display: "flex", justifyContent: "center" }}>
               <Box sx={{ display: "flex", alignItems: "center", height: 32, lineHeight: 0 }}>
-                <Box
-                  component="img"
-                  src={logo}
-                  alt="Logo da loja"
-                  sx={{ height: 32, display: "block" }}
-                />
+                <Link to="/" style={{ lineHeight: 0, display: "block" }}>
+                  <Box
+                    component="img"
+                    src={logo}
+                    alt="Logo da loja"
+                    sx={{ height: 32, display: "block" }}
+                  />
+                </Link>
               </Box>
             </Box>
             <Box

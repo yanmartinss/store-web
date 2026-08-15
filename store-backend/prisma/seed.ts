@@ -20,72 +20,128 @@ async function main() {
       data: { slug: "camisas", name: "Camisas" },
     });
 
-    await tx.categoryMetadata.create({
-      data: { id: "tech", name: "Tecnologia", categoryId: category.id },
+    await tx.categoryMetadata.createMany({
+      data: [
+        { id: "tech", name: "Tecnologia", categoryId: category.id },
+        { id: "cor", name: "Cor", categoryId: category.id },
+        { id: "precos", name: "Preços", categoryId: category.id },
+      ],
     });
 
     await tx.banner.createMany({
       data: [
-        { img: "banner_promo_1.jpg", link: "/categories/camisas" },
-        { img: "banner_promo_2.jpg", link: "/categories/algo" },
+        { img: "banner-1.png", link: "/categories/camisas" },
+        { img: "banner-2.png", link: "/categories/camisas" },
+        { img: "banner-3.png", link: "/categories/camisas" },
+        { img: "banner-4.png", link: "/categories/camisas" },
       ],
     });
 
     await tx.metadataValue.createMany({
       data: [
-        { id: "node", label: "Node", categoryMetadataId: "tech" },
         { id: "react", label: "React", categoryMetadataId: "tech" },
-        { id: "python", label: "Python", categoryMetadataId: "tech" },
+        { id: "react-native", label: "React Native", categoryMetadataId: "tech" },
         { id: "php", label: "PHP", categoryMetadataId: "tech" },
+        { id: "azul", label: "Azul", categoryMetadataId: "cor" },
+        { id: "cinza", label: "Cinza", categoryMetadataId: "cor" },
+        { id: "preta", label: "Preta", categoryMetadataId: "cor" },
+        { id: "grafite", label: "Grafite", categoryMetadataId: "cor" },
+        { id: "ate-50", label: "Até R$ 50", categoryMetadataId: "precos" },
+        { id: "de-50-a-100", label: "De R$ 50 a R$ 100", categoryMetadataId: "precos" },
+        { id: "acima-100", label: "Acima de R$ 100", categoryMetadataId: "precos" },
       ],
     });
 
     const products = [
       {
-        label: "Camisa RN",
-        price: 89.9,
-        description: "Camisa com estampa de React Native",
-        metadataValueId: "node",
-      },
-      {
-        label: "Camisa React",
-        price: 94.5,
-        description: "Camisa com logo do React",
+        label: "Camisa React - Azul",
+        price: 59.99,
+        description: "Camisa com logo do React na cor azul",
         metadataValueId: "react",
+        colorValueId: "azul",
+        image: "camisa-react-azul.png",
+        viewsCount: 200,
+        salesCount: 5,
       },
       {
-        label: "Camisa Python",
-        price: 79.99,
-        description: "Camisa com design Python",
-        metadataValueId: "python",
+        label: "Camisa React - Cinza",
+        price: 59.99,
+        description: "Camisa com logo do React na cor cinza",
+        metadataValueId: "react",
+        colorValueId: "cinza",
+        image: "camisa-react-cinza.png",
+        viewsCount: 80,
+        salesCount: 40,
+      },
+      {
+        label: "Camisa React - Preta",
+        price: 59.99,
+        description: "Camisa com logo do React na cor preta",
+        metadataValueId: "react",
+        colorValueId: "preta",
+        image: "camisa-react-preta.png",
+        viewsCount: 300,
+        salesCount: 10,
+      },
+      {
+        label: "Camisa React Native",
+        price: 59.99,
+        description: "Camisa com logo do React Native",
+        metadataValueId: "react-native",
+        colorValueId: "preta",
+        image: "camisa-react-native.png",
+        viewsCount: 150,
+        salesCount: 35,
       },
       {
         label: "Camisa PHP",
-        price: 69.9,
-        description: "Camisa com estampa PHP",
+        price: 59.99,
+        description: "Camisa com logo do PHP",
         metadataValueId: "php",
+        colorValueId: "cinza",
+        image: "camisa-php.png",
+        viewsCount: 40,
+        salesCount: 50,
+      },
+      {
+        label: "Camisa PHP - Grafite",
+        price: 59.99,
+        description: "Camisa com logo do PHP na cor grafite",
+        metadataValueId: "php",
+        colorValueId: "grafite",
+        image: "camisa-php-grafite.png",
+        viewsCount: 20,
+        salesCount: 25,
       },
     ];
 
     for (const p of products) {
-      const slug = p.label.replaceAll(" ", "_").toLowerCase();
       const product = await tx.product.create({
         data: {
           label: p.label,
           price: p.price,
           description: p.description,
           categoryId: category.id,
+          viewsCount: p.viewsCount,
+          salesCount: p.salesCount,
           productImages: {
-            create: [
-              { url: `${slug}_1.jpg` },
-              { url: `${slug}_2.jpg` },
-            ],
+            create: [{ url: p.image }],
           },
           productMetadata: {
-            create: {
-              categoryMetadataId: "tech",
-              metadataValueId: p.metadataValueId,
-            },
+            create: [
+              {
+                categoryMetadataId: "tech",
+                metadataValueId: p.metadataValueId,
+              },
+              {
+                categoryMetadataId: "cor",
+                metadataValueId: p.colorValueId,
+              },
+              {
+                categoryMetadataId: "precos",
+                metadataValueId: "de-50-a-100",
+              },
+            ],
           },
         },
       });

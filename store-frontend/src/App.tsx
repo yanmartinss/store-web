@@ -1,18 +1,48 @@
+import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom'
 import Box from '@mui/material/Box'
-import Container from '@mui/material/Container'
 import Header from './components/Header/Header'
-import BannerCarousel from './components/Home/BannerCarousel'
+import Footer from './components/Footer/Footer'
+import Home from './pages/Home'
+import Login from './pages/Login'
+import Register from './pages/Register'
+import Category from './pages/Category'
+import SearchResults from './pages/SearchResults'
+import Product from './pages/Product'
+
+function AppContent() {
+  const location = useLocation()
+  const hideFooter = location.pathname === '/login' || location.pathname === '/register'
+
+  return (
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100svh' }}>
+      <Header />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route
+          path="/busca"
+          element={<SearchResults key={location.pathname + location.search} />}
+        />
+        <Route
+          path="/product/:id"
+          element={<Product key={location.pathname} />}
+        />
+        <Route
+          path="/:slug"
+          element={<Category key={location.pathname + location.search} />}
+        />
+      </Routes>
+      {!hideFooter && <Footer />}
+    </Box>
+  )
+}
 
 function App() {
   return (
-    <>
-      <Header />
-      <Box component="main" sx={{ bgcolor: 'background.default', minHeight: '100svh' }}>
-        <Container maxWidth="lg" sx={{ py: 2 }}>
-          <BannerCarousel />
-        </Container>
-      </Box>
-    </>
+    <BrowserRouter>
+      <AppContent />
+    </BrowserRouter>
   )
 }
 

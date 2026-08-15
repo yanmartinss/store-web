@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 import Box from "@mui/material/Box";
+import Skeleton from "@mui/material/Skeleton";
 import { styled } from "@mui/material/styles";
 
 const BANNERS = [
@@ -34,9 +35,10 @@ const Dot = styled("button")(({ theme }) => ({
 
 export default function BannerCarousel() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [
-    Autoplay({ delay: 4000, stopOnInteraction: false }),
+    Autoplay({ delay: 3000, stopOnInteraction: false }),
   ]);
   const [selected, setSelected] = useState(0);
+  const [loaded, setLoaded] = useState(false);
 
   const onSelect = useCallback((api: NonNullable<typeof emblaApi>) => {
     setSelected(api.selectedScrollSnap());
@@ -57,9 +59,21 @@ export default function BannerCarousel() {
       sx={{
         position: "relative",
         overflow: "hidden",
+        borderRadius: 0.4,
         bgcolor: "background.paper",
       }}
     >
+      {!loaded && (
+        <Skeleton
+          variant="rounded"
+          sx={{
+            position: "absolute",
+            inset: 0,
+            borderRadius: 0.4,
+            bgcolor: "grey.400",
+          }}
+        />
+      )}
       <Box ref={emblaRef} sx={{ overflow: "hidden" }}>
         <Box sx={{ display: "flex" }}>
           {BANNERS.map((src) => (
@@ -69,7 +83,13 @@ export default function BannerCarousel() {
                 src={src}
                 alt=""
                 draggable={false}
-                sx={{ width: "100%", height: "auto", display: "block" }}
+                onLoad={() => setLoaded(true)}
+                sx={{
+                  width: "100%",
+                  height: "auto",
+                  aspectRatio: "1216 / 408",
+                  display: "block",
+                }}
               />
             </Box>
           ))}
