@@ -54,7 +54,7 @@ export const createStripeCheckoutSession = async ({
       orderId: orderId.toString(),
     },
     success_url: `${getFrontendURL()}/success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${getFrontendURL()}/my-orders`,
+    cancel_url: `${getFrontendURL()}/cart`,
   });
 
   return session;

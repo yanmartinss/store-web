@@ -7,6 +7,7 @@ import * as userController from "../controllers/user.controller.js";
 import * as webhookController from "../controllers/webhook.controller.js";
 import * as orderController from "../controllers/order.controller.js";
 import { authMiddleware } from "../middleware/auth.js";
+import { authLimiter } from "../middleware/rate-limit.js";
 
 export const routes = Router();
 
@@ -23,8 +24,10 @@ routes.get(
 );
 routes.post("/cart/mount", cartController.cartMount);
 routes.get("/cart/shipping", cartController.calculateShipping);
-routes.post("/user/register", userController.register);
-routes.post("/user/login", userController.login);
+routes.get("/cart/validate-size", cartController.validateSize);
+routes.post("/user/register", authLimiter, userController.register);
+routes.post("/user/login", authLimiter, userController.login);
+routes.post("/user/logout", userController.logout);
 routes.post("/user/addresses", authMiddleware, userController.addAddress);
 routes.get("/user/addresses", authMiddleware, userController.getAddresses);
 routes.post("/cart/finish", authMiddleware, cartController.finish);

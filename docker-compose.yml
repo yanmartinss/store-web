@@ -6,18 +6,18 @@ services:
     container_name: store_db
     restart: always
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: admin123
-      POSTGRES_DB: store_db
-    ports:
-      - "5432:5432"
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-admin123}
+      POSTGRES_DB: ${POSTGRES_DB:-store_db}
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
       interval: 5s
       timeout: 5s
       retries: 5
+    networks:
+      - store-network
 
   backend:
     build:
@@ -25,20 +25,16 @@ services:
       dockerfile: Dockerfile
     container_name: store_backend
     restart: always
-    ports:
-      - "8080:8080"
     env_file:
       - ./store-backend/.env
     environment:
-      DATABASE_URL: postgresql://postgres:admin123@db:5432/store_db?schema=public
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-admin123}@db:5432/${POSTGRES_DB:-store_db}?schema=public
       PORT: "8080"
     depends_on:
       db:
         condition: service_healthy
-    volumes:
-      - ./store-backend:/app
-      - /app/node_modules
-    command: sh -c "npx prisma migrate deploy && npm run dev"
+    networks:
+      - store-network
 
   frontend:
     build:
@@ -46,16 +42,14 @@ services:
       dockerfile: Dockerfile
     container_name: store_frontend
     restart: always
-    ports:
-      - "3000:3000"
-    environment:
-      NEXT_PUBLIC_API_BASE_URL: http://localhost:8080
     depends_on:
       - backend
-    volumes:
-      - ./store-frontend:/app
-      - /app/node_modules
-      - /app/.next
+    networks:
+      - store-network
+
+networks:
+  store-network:
+    driver: bridge
 
 volumes:
   pgdata:

@@ -1,0 +1,11 @@
+services:
+  backend:
+    command: sh -c "npx prisma migrate deploy && npm start"
+
+  frontend:
+    build:
+      dockerfile: Dockerfile.prod
+      args:
+        VITE_API_URL: ${VITE_API_URL}
+    ports:
+      - "80:80"

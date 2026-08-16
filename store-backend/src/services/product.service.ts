@@ -104,6 +104,7 @@ export const getProduct = async (id: number) => {
       price: true,
       description: true,
       categoryId: true,
+      availableSizes: true,
       productImages: true,
       productMetadata: true,
     },
@@ -112,7 +113,9 @@ export const getProduct = async (id: number) => {
   if (!product) return null;
 
   const values = await prisma.metadataValue.findMany({
-    where: { id: { in: product.productMetadata.map((m) => m.metadataValueId) } },
+    where: {
+      id: { in: product.productMetadata.map((m) => m.metadataValueId) },
+    },
     select: { id: true, label: true },
   });
   const labelById = new Map(values.map((value) => [value.id, value.label]));
@@ -130,6 +133,17 @@ export const getProduct = async (id: number) => {
       label: labelById.get(meta.metadataValueId) ?? "",
     })),
   };
+};
+
+export const isSizeAvailable = async (productId: number, size: string) => {
+  const product = await prisma.product.findUnique({
+    where: { id: productId },
+    select: { availableSizes: true },
+  });
+  if (!product) return false;
+  // products without size restrictions accept any size
+  if (product.availableSizes.length === 0) return true;
+  return product.availableSizes.includes(size);
 };
 
 export const incrementProductViews = async (id: number) => {

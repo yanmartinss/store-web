@@ -110,7 +110,25 @@ export default function ProductSection({
         </Typography>
       )}
 
-      {!state.loading && !state.error && (
+      {!state.loading && !state.error && state.products.length === 0 && (
+        <Box
+          sx={{
+            py: 4,
+            px: 2,
+            textAlign: "center",
+            border: "1px dashed",
+            borderColor: "divider",
+            borderRadius: 1,
+            color: "text.secondary",
+          }}
+        >
+          <Typography variant="body2">
+            Nenhum produto disponível nesta seção no momento.
+          </Typography>
+        </Box>
+      )}
+
+      {!state.loading && !state.error && state.products.length > 0 && (
         <Box
           sx={{
             display: "grid",

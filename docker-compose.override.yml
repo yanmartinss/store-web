@@ -1,0 +1,26 @@
+services:
+  db:
+    ports:
+      - "5432:5432"
+
+  backend:
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./store-backend:/app
+      - /app/node_modules
+      - /app/generated
+    # bind mount above wipes the image's build-time /app/generated (prisma
+    # client) and node_modules is anonymous-volumed separately, so both are
+    # regenerated/applied on every start
+    command: sh -c "npx prisma generate && npx prisma migrate deploy && npm run dev"
+
+  frontend:
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_URL: http://localhost:8080/api
+      DOCKER: "true"
+    volumes:
+      - ./store-frontend:/app
+      - /app/node_modules

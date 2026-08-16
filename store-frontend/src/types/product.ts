@@ -18,6 +18,7 @@ export interface ProductDetail {
   description: string | null;
   images: string[];
   metadata: ProductMetadataItem[];
+  availableSizes: string[];
 }
 
 export interface ProductsResponse {

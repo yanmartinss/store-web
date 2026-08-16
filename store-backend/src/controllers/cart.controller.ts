@@ -1,9 +1,10 @@
 import type { RequestHandler } from "express";
 import { cartMountSchema } from "../schemas/cart-mount-schema.js";
-import { getProduct } from "../services/product.service.js";
+import { getProduct, isSizeAvailable } from "../services/product.service.js";
 import { getAbsoluteImgUrl } from "../utils/get-absolute-img-url.js";
 import { calculateShippingSchema } from "../schemas/calculate-shipping-schema.js";
 import { cartFinishSchema } from "../schemas/cart-finish-schema.js";
+import { validateSizeSchema } from "../schemas/validate-size-schema.js";
 import { getAddressById } from "../services/user.service.js";
 import { createOrder } from "../services/order.service.js";
 import { createPaymentLink } from "../services/payment.service.js";
@@ -32,6 +33,19 @@ export const cartMount: RequestHandler = async (req, res) => {
   res.json({ error: null, products });
 };
 
+export const validateSize: RequestHandler = async (req, res) => {
+  const parseResult = validateSizeSchema.safeParse(req.query);
+
+  if (!parseResult.success)
+    return res.status(400).json({ error: "Invalid parameters" });
+
+  const { productId, size } = parseResult.data;
+
+  const available = await isSizeAvailable(parseInt(productId), size);
+
+  res.json({ error: null, available });
+};
+
 export const calculateShipping: RequestHandler = async (req, res) => {
   const parseResult = calculateShippingSchema.safeParse(req.query);
 
@@ -55,6 +69,15 @@ export const finish: RequestHandler = async (req, res) => {
 
   const address = await getAddressById(userId, addressId);
   if (!address) return res.status(400).json({ error: "Invalid address" });
+
+  for (const item of cart) {
+    if (!item.size) continue;
+    const available = await isSizeAvailable(item.productId, item.size);
+    if (!available)
+      return res.status(400).json({
+        error: `Selected size is no longer available for one of the items in your cart`,
+      });
+  }
 
   const shippingCost = 7; // TODO: temporary fixed shipping cost
   const shippingDays = 3; // TODO: temporary fixed shipping days

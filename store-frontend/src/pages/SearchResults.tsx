@@ -64,7 +64,7 @@ export default function SearchResults() {
       })
       .catch(() => {
         if (cancelled) return;
-        setError("Não foi possível carregar os resultados.");
+        setError("Unable to load the results.");
         setLoading(false);
       });
 
@@ -269,7 +269,10 @@ export default function SearchResults() {
         )}
 
         {!loading && !error && count === 0 && (
-          <Typography color="text.secondary" sx={{ py: 4, textAlign: "center" }}>
+          <Typography
+            color="text.secondary"
+            sx={{ py: 4, textAlign: "center" }}
+          >
             {q
               ? `Nenhum resultado para \u201c${q}\u201d.`
               : "Nenhum produto cadastrado."}

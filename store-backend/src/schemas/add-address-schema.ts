@@ -1,11 +1,12 @@
 import z from "zod";
+import { sanitizeString } from "../utils/sanitize.js";
 
 export const addAddressSchema = z.object({
-  zipcode: z.string(),
-  street: z.string(),
-  number: z.string(),
-  city: z.string(),
-  state: z.string(),
-  country: z.string(),
-  complement: z.string().optional(),
+  zipcode: z.string().transform(sanitizeString),
+  street: z.string().transform(sanitizeString),
+  number: z.string().transform(sanitizeString),
+  city: z.string().transform(sanitizeString),
+  state: z.string().transform(sanitizeString),
+  country: z.string().transform(sanitizeString),
+  complement: z.string().transform(sanitizeString).optional(),
 });

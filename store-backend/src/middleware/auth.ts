@@ -6,13 +6,8 @@ export const authMiddleware = async (
   res: Response,
   next: NextFunction,
 ) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader) return res.status(401).json({ error: "Access denied" });
-
-  const tokenSplit = authHeader.split("Bearer ");
-  if (!tokenSplit[1]) return res.status(401).json({ error: "Access denied" });
-
-  const token = tokenSplit[1];
+  const token = req.cookies?.token;
+  if (!token) return res.status(401).json({ error: "Access denied" });
 
   const userId = await getUserIdByToken(token);
   if (!userId) return res.status(401).json({ error: "Access denied" });

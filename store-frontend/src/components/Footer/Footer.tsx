@@ -5,6 +5,7 @@ import Container from "@mui/material/Container";
 import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import Tooltip from "@mui/material/Tooltip";
 
 const FOOTER_SECTIONS = ["Camisas", "Kit B7Web", "Acessórios", "Eletrônicos"];
 
@@ -36,7 +37,7 @@ export default function Footer() {
     event.preventDefault();
     const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     if (!isValid) {
-      setError("Informe um e-mail válido.");
+      setError("Enter a valid email address.");
       return;
     }
     setError("");
@@ -134,36 +135,30 @@ export default function Footer() {
               helperText={error}
               sx={{
                 width: "100%",
-                "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                  {
-                    borderColor: "divider",
-                  },
-                "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline":
-                  {
-                    borderColor: "divider",
-                  },
                 "@media (min-width:640px)": {
                   flex: 1,
                   width: "auto",
                 },
               }}
             />
-            <Button
-              type="submit"
-              variant="contained"
-              sx={{
-                bgcolor: "brand.main",
-                whiteSpace: "nowrap",
-                px: 3,
-                height: 56,
-                width: "100%",
-                "@media (min-width:640px)": {
-                  width: "auto",
-                },
-              }}
-            >
-              Enviar
-            </Button>
+            <Tooltip title="Inscrever-se na newsletter">
+              <Button
+                type="submit"
+                variant="contained"
+                sx={{
+                  bgcolor: "brand.main",
+                  whiteSpace: "nowrap",
+                  px: 3,
+                  height: 56,
+                  width: "100%",
+                  "@media (min-width:640px)": {
+                    width: "auto",
+                  },
+                }}
+              >
+                Enviar
+              </Button>
+            </Tooltip>
           </Box>
         </Box>
       </Container>
@@ -324,34 +319,35 @@ export default function Footer() {
               }}
             >
               {SOCIAL_ICONS.map((social) => (
-                <Box
-                  key={social.alt}
-                  component="a"
-                  href="#"
-                  aria-label={social.alt}
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    border: 1,
-                    borderColor: "rgba(255,255,255,0.25)",
-                    borderRadius: 1,
-                    px: 1.5,
-                    py: 1.5,
-                    cursor: "pointer",
-                    transition: "background-color 0.2s",
-                    "&:hover": {
-                      bgcolor: "rgba(30, 111, 217, 0.2)",
-                    },
-                  }}
-                >
+                <Tooltip key={social.alt} title={social.alt}>
                   <Box
-                    component="img"
-                    src={social.src}
-                    alt={social.alt}
-                    sx={{ width: 20, height: 20 }}
-                  />
-                </Box>
+                    component="a"
+                    href="#"
+                    aria-label={social.alt}
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      border: 1,
+                      borderColor: "rgba(255,255,255,0.25)",
+                      borderRadius: 1,
+                      px: 1.5,
+                      py: 1.5,
+                      cursor: "pointer",
+                      transition: "background-color 0.2s",
+                      "&:hover": {
+                        bgcolor: "rgba(30, 111, 217, 0.2)",
+                      },
+                    }}
+                  >
+                    <Box
+                      component="img"
+                      src={social.src}
+                      alt={social.alt}
+                      sx={{ width: 20, height: 20 }}
+                    />
+                  </Box>
+                </Tooltip>
               ))}
             </Box>
           </Box>

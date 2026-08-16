@@ -56,6 +56,7 @@ model Product {
   categoryId      Int
   viewsCount      Int               @default(0)
   salesCount      Int               @default(0)
+  availableSizes  String[]          @default([])
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @default(now()) @updatedAt
   productImages   ProductImage[]
@@ -143,6 +144,7 @@ model OrderProduct {
   productId Int
   quantity  Int      @default(1)
   price     Float
+  size      String?
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 

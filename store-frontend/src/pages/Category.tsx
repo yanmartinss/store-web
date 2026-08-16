@@ -218,9 +218,7 @@ export default function Category() {
 
       if (categoryRes?.data.metadata) {
         setMetadataGroups(categoryRes.data.metadata);
-        setExpandedGroups(
-          categoryRes.data.metadata.map((group) => group.id),
-        );
+        setExpandedGroups(categoryRes.data.metadata.map((group) => group.id));
       }
 
       if (productsRes?.data.products) {
@@ -228,7 +226,7 @@ export default function Category() {
       }
 
       if (!categoryRes && !productsRes) {
-        setError("Não foi possível carregar os produtos.");
+        setError("Unable to load the products.");
       }
 
       setLoading(false);
@@ -482,7 +480,9 @@ export default function Category() {
         }}
       >
         <Box sx={{ display: "flex", justifyContent: "center", pt: 1 }}>
-          <Box sx={{ width: 36, height: 4, borderRadius: 2, bgcolor: "grey.400" }} />
+          <Box
+            sx={{ width: 36, height: 4, borderRadius: 2, bgcolor: "grey.400" }}
+          />
         </Box>
         <Box
           sx={{
@@ -526,7 +526,8 @@ export default function Category() {
             fullWidth
             onClick={() => setFiltersOpen(false)}
           >
-            Ver {products.length} {products.length === 1 ? "produto" : "produtos"}
+            Ver {products.length}{" "}
+            {products.length === 1 ? "produto" : "produtos"}
           </Button>
         </Box>
       </Drawer>

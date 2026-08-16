@@ -31,6 +31,7 @@ export const createOrder = async ({
         productId: product.id,
         quantity: cartItem.quantity,
         price: product.price,
+        size: cartItem.size,
       });
     }
   }

@@ -33,7 +33,19 @@ export const login: RequestHandler = async (req, res) => {
   const token = await logUser(email, password);
   if (!token) return res.status(401).json({ error: "Invalid credentials" });
 
-  res.status(200).json({ error: null, token });
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  });
+
+  res.status(200).json({ error: null });
+};
+
+export const logout: RequestHandler = async (req, res) => {
+  res.clearCookie("token");
+  res.status(200).json({ error: null });
 };
 
 export const addAddress: RequestHandler = async (req, res) => {

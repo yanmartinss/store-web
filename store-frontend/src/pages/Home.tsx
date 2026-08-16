@@ -1,12 +1,15 @@
-import Box from '@mui/material/Box'
-import Container from '@mui/material/Container'
-import BannerCarousel from '../components/Home/BannerCarousel'
-import BenefitsCards from '../components/Home/BenefitsCards'
-import ProductSection from '../components/Home/ProductSection'
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
+import BannerCarousel from "../components/Home/BannerCarousel";
+import BenefitsCards from "../components/Home/BenefitsCards";
+import ProductSection from "../components/Home/ProductSection";
 
 export default function Home() {
   return (
-    <Box component="main" sx={{ bgcolor: 'background.default', minHeight: '100svh' }}>
+    <Box
+      component="main"
+      sx={{ bgcolor: "background.default", minHeight: "100svh" }}
+    >
       <Container maxWidth="lg" sx={{ py: 2 }}>
         <BannerCarousel />
         <BenefitsCards />
@@ -24,5 +27,5 @@ export default function Home() {
         />
       </Container>
     </Box>
-  )
+  );
 }
